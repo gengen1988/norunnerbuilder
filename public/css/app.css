@@ -1,0 +1,38 @@
+.ux-editor, .ux-preview {
+  float: left;
+  height: 100vh;
+  width: 50vw;
+}
+
+.ux-preview {
+  overflow: auto;
+}
+
+/*
+.full-height {
+  height: 100vh;
+}
+
+.header {
+  height: 256px;
+  background: grey;
+  margin-bottom: 20px;
+}
+
+.fab:focus {
+  outline: none;
+}
+
+.fab {
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  width: 64px;
+  height: 64px;
+}
+
+.fab {
+  position: fixed;
+  top: 225px;
+  left: 128px;
+}*/
