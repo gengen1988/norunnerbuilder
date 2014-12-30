@@ -6,7 +6,8 @@ module.exports = function ($scope, db) {
     db.query(function (doc, emit) {
       emit(doc._rev, {
         title: doc.title,
-        markdown: doc.markdown
+        markdown: doc.markdown,
+        timestamp: doc.timestamp
       });
 
     }).then(function (result) {
@@ -15,7 +16,8 @@ module.exports = function ($scope, db) {
           id: row.id,
           rev: row.key,
           title: row.value.title,
-          markdown: row.value.markdown
+          markdown: row.value.markdown,
+          timestamp: row.value.timestamp
         };
       });
       $scope.$apply();

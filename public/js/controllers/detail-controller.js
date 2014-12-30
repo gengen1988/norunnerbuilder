@@ -1,5 +1,5 @@
 // @ngInject
-module.exports = function (db, doc) {
+module.exports = function ($state, db, doc) {
   var vm = this;
 
   vm.data = doc.markdown;
@@ -15,15 +15,28 @@ module.exports = function (db, doc) {
   vm.save = function () {
     var item = {
       markdown: vm.data,
-      title: vm.title
+      title: vm.title,
+      timestamp: Date.now()
     };
 
-    if (!doc.id) {
-      db.post(item);
-      return;
-    }
+    if (!doc.id) return db.post(item).then(function (post) {
+      $state.go('detail', {
+        id: post.id
+      });
+    });
 
-    db.put(item, doc.id, doc.rev);
+    db.put(item, doc.id, doc.rev).catch(function (err) {
+      if (err.status == 409) {
+        console.log(item, doc.id, doc.rev);
+        db.get(doc.id).then(function (doc) {
+          alert(JSON.stringify({
+            message: '检查到冲突',
+            current: item.markdown,
+            remote: doc.markdown
+          }, null, 2));
+        });
+      }
+    });
   };
 
   vm.cancel = function () {

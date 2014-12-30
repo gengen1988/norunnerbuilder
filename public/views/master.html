@@ -1,24 +1,31 @@
 <div class="header">
 </div>
 
-<button class="fab btn-danger" ui-sref="detail">
-  <i class="glyphicon glyphicon-plus"></i>
-</button>
-
 <div class="container">
 
   <div class="row">
     <div class="col-md-9">
       <ul class="media-list">
-        <li class="media" ng-repeat="item in vm.items">
+        <li class="media">
+          <button class="btn btn-lg btn-primary" ui-sref="detail">
+            <i class="glyphicon glyphicon-plus"></i>
+          </button>
+        </li>
+        <li class="media" ng-repeat="item in vm.items | orderBy: 'timestamp': true">
           <a class="media-left" ui-sref="detail({id: item.id})">
             <img ux-holder="holder.js/64x64">
           </a>
           <div class="media-body">
-            <a ui-sref="detail({id: item.id})">
-              <h4 class="media-heading" ng-bind="item.title"></h4>
-            </a>
-            <div ng-bind="item.markdown"></div>
+            <h4 class="media-heading" >
+              <button class="btn btn-xs btn-danger" ng-click="vm.remove(item)">
+                <i class="glyphicon glyphicon-remove"></i>
+              </button>
+              <a ui-sref="detail({id: item.id})" ng-bind="item.title || '<知名不具>'"></a>
+            </h4>
+            <span class="text-muted">
+              <small ng-bind="item.timestamp | date"></small>
+            </span>
+            <p ng-bind="item.markdown"></p>
           </div>
         </li>
       </ul>
