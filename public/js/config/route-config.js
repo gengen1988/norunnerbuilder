@@ -11,24 +11,8 @@ module.exports = function ($stateProvider, $urlRouterProvider) {
       controllerAs: 'vm',
       resolve: {
         // @ngInject
-        doc: function ($q, $stateParams, db) {
-          var id = $stateParams.id;
-          if (!id || id === '') {
-            return {
-            };
-          }
-
-          var deferred = $q.defer();
-          db.get(id).then(function (doc) {
-            deferred.resolve({
-              id: doc._id,
-              title: doc.title,
-              markdown: doc.markdown,
-              rev: doc._rev
-            });
-          });
-
-          return deferred.promise;
+        doc: function ($stateParams, DocService) {
+          return DocService.getDoc($stateParams.id);
         }
       }
     })

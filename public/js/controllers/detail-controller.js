@@ -1,5 +1,5 @@
 // @ngInject
-module.exports = function ($state, db, doc) {
+module.exports = function ($state, DocService, doc) {
   var vm = this;
 
   vm.data = doc.markdown;
@@ -9,33 +9,18 @@ module.exports = function ($state, db, doc) {
     useWrapMode: true,
     mode: 'markdown',
     theme: 'twilight',
-    onLoad: onLoad
+    onLoad: aceOnLoad
   };
 
   vm.save = function () {
-    var item = {
-      markdown: vm.data,
-      title: vm.title,
-      timestamp: Date.now()
-    };
-
-    if (!doc.id) return db.post(item).then(function (post) {
-      $state.go('detail', {
-        id: post.id
-      });
-    });
-
-    db.put(item, doc.id, doc.rev).catch(function (err) {
-      if (err.status == 409) {
-        console.log(item, doc.id, doc.rev);
-        db.get(doc.id).then(function (doc) {
-          alert(JSON.stringify({
-            message: '检查到冲突',
-            current: item.markdown,
-            remote: doc.markdown
-          }, null, 2));
-        });
+    DocService.upsertDoc(doc.id, doc.rev, vm.data, vm.title).then(function (meta) {
+      doc.rev = meta.rev;
+      $state.go('detail', {id: meta.id}, {location: 'replace'});
+    }).catch(function (err) {
+      if (err.status === 409) {
+        alert('冲突');
       }
+
     });
   };
 
@@ -43,7 +28,7 @@ module.exports = function ($state, db, doc) {
     window.history.back();
   };
 
-  function onLoad(editor) {
+  function aceOnLoad(editor) {
     editor.getSession().setTabSize(2);
     editor.setFontSize(16);
     editor.commands.addCommand({

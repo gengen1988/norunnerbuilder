@@ -1,32 +1,22 @@
 // @ngInject
-module.exports = function ($scope, db) {
+module.exports = function (DocService) {
   var vm = this;
 
   vm.load = function () {
-    db.query(function (doc, emit) {
-      emit(doc._rev, {
-        title: doc.title,
-        markdown: doc.markdown,
-        timestamp: doc.timestamp
-      });
-
-    }).then(function (result) {
-      vm.items = result.rows.map(function (row) {
-        return {
-          id: row.id,
-          rev: row.key,
-          title: row.value.title,
-          markdown: row.value.markdown,
-          timestamp: row.value.timestamp
-        };
-      });
-      $scope.$apply();
+    DocService.getAllDocs().then(function (docs) {
+      console.log(docs);
+      vm.items = docs;
     });
   };
 
   vm.remove = function (item) {
-    db.remove(item.id, item.rev);
-    vm.load();
+    DocService.removeDoc(item.id, item.rev).then(function () {
+      vm.load();
+    });
+  };
+
+  vm.compact = function () {
+    DocService.compact();
   };
 
   vm.load();

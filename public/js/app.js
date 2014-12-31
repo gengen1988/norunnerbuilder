@@ -20,4 +20,5 @@ angular.module('app', [
   'markdown'
 ])
   .controller('DetailController', require('js/controllers/detail-controller'))
-  .controller('MasterController', require('js/controllers/master-controller'));
+  .controller('MasterController', require('js/controllers/master-controller'))
+  .service('DocService', require('js/services/doc-service'));
